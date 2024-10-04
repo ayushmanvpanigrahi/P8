@@ -1,0 +1,68 @@
+Practical 8
+
+ifconfig
+
+rpm -q bind
+
+vi /etc/named.conf
+
+options {
+        listen-on port 53 { 10.0.0.100; };
+        listen-on-v6 port 53 { ::1; };
+        directory       "/var/named";
+        dump-file       "/var/named/data/cache_dump.db";
+        statistics-file "/var/named/data/named_stats.txt";
+        memstatistics-file "/var/named/data/named_mem_stats.txt";
+        allow-query     { any; };
+
+zone "student.com" IN {
+        type master;
+        file "zone.student.com";
+};
+
+
+
+cd /var/named
+
+
+vi zone.student.com
+
+$TTL 1M
+@            IN          SOA        tycs-server.student.com.       root.tycs-ser
+ver.student.com. (                  12345;
+                                    1H;
+                                    15M;
+                                    1D;
+                                    5M);
+@            IN           NS        tycs-server.student.com.      tycs-server.st
+udent.com.                IN            A          10.0.0.100
+ftp.student.com           IN            A           10.0.0.100
+www.student.com           IN            A           10.0.0.100
+
+
+
+systemctl restart named
+systemctl status named
+systemctl stop firewalld
+
+
+
+client:
+
+ifconfig
+
+vi /etc/resolv.conf
+cat /etc/resolv.conf
+
+nslookup www.student.com
+
+
+dig ftp.student.com
+
+
+server:-
+vi /etc/resolv.conf
+nameserver 10.0.0.100
+nslookup www.student.com
+
+dig ftp.student.com
